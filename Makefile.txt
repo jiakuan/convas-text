@@ -6,6 +6,7 @@ Option            Description
 clean             Clean build directories of projects
 scss              Compile SCSS files into minified CSS
 gwt               Build GWT Gradle projects
+super             Run GWT Super Dev Mode
 build             Build both GWT and J2CL projects
 run               Run the demo application
 site              Deploy site to canvas-text.docstr.org

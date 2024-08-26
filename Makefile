@@ -13,6 +13,9 @@ scss:
 gwt:
 	./gradlew build
 
+super:
+	./gradlew :demo:gwtSuperDev
+
 .PHONY: build
 build: gwt
 

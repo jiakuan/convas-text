@@ -15,6 +15,7 @@
  */
 package org.docstr.gwt.canvastext.client;
 
+import static elemental2.dom.DomGlobal.console;
 import static org.docstr.gwt.canvastext.client.Justify.justifyLine;
 
 import elemental2.dom.CanvasRenderingContext2D;
@@ -40,6 +41,9 @@ public class SplitText {
     final Map<String, Double> textMap = new HashMap<>();
 
     List<String> textArray = new ArrayList<>();
+    if (text == null) {
+      return textArray;
+    }
     String[] initialTextArray = text.split("\n");
 
     double spaceWidth = justify ? measureText(ctx, textMap, SPACE) : 0;
@@ -48,13 +52,13 @@ public class SplitText {
     int averageSplitPoint = 0;
     for (String singleLine : initialTextArray) {
       double textWidth = measureText(ctx, textMap, singleLine);
-      int singleLineLength = singleLine.length();
 
       if (textWidth <= width) {
         textArray.add(singleLine);
         continue;
       }
 
+      // Keep the remaining part of the line
       String tempLine = singleLine;
 
       int splitPoint = 0;
@@ -63,18 +67,18 @@ public class SplitText {
 
       while (textWidth > width) {
         index++;
-        splitPoint = averageSplitPoint;
+        splitPoint = Math.min(averageSplitPoint, tempLine.length());
         splitPointWidth =
             splitPoint == 0 ? 0
                 : measureText(ctx, textMap, tempLine.substring(0, splitPoint));
 
         // if (splitPointWidth === width) Nailed
         if (splitPointWidth < width) {
-          while (splitPointWidth < width && splitPoint < singleLineLength) {
+          while (splitPointWidth < width && splitPoint < tempLine.length()) {
             splitPoint++;
             splitPointWidth = measureText(ctx, textMap,
                 tempLine.substring(0, splitPoint));
-            if (splitPoint == singleLineLength) {
+            if (splitPoint == tempLine.length()) {
               break;
             }
           }
@@ -114,7 +118,7 @@ public class SplitText {
           splitPoint = 1;
         }
 
-        // Finally sets text to print
+        // Finally, sets text to print
         textToPrint = tempLine.substring(0, splitPoint);
 
         textToPrint = justify
